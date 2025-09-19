@@ -9,6 +9,7 @@
 #include "Interactable.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnInteract, UInteractable*, interactable, AActor*, actorWhoTriggered, UInteractableController*, controllerThatTriggered);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPromptDisplay, UInteractable*, interactable, AActor*, controllerOwner, UInteractableController*, controllerComponent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class INTERACTABLESPLUGIN_API UInteractable : public USceneComponent
@@ -74,6 +75,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnInteract OnSecondaryInteract;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnPromptDisplay OnPromptShown;
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnPromptDisplay OnPromptHidden;
 
 	// State
 	UInteractableController* DisplayingController;

@@ -104,10 +104,16 @@ void UInteractableController::UpdateBestInteractable()
 		return;
 
 	if (BestInteractable)
+	{
 		BestInteractable->DisplayingController = nullptr;
+		BestInteractable->OnPromptHidden.Broadcast(newBest, GetOwner(), this);
+	}
 
 	if (newBest)
+	{
 		newBest->DisplayingController = this;
+		newBest->OnPromptShown.Broadcast(newBest, GetOwner(), this);
+	}
 
 	BestInteractable = newBest;
 	UpdateWidgetDisplay();
