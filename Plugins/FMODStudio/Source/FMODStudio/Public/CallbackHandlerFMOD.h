@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "fmod_studio.hpp"
-#include "FMODCallbackHandler.generated.h"
+#include "CallbackHandlerFMOD.generated.h"
 
 /**
  * This class is required for Unreal reflection, but does not need to be modified.

@@ -6,7 +6,7 @@
 #include "Engine/EngineTypes.h"
 #include "GenericPlatform/GenericPlatform.h"
 #include "fmod_common.h"
-#include "FMODCallbackHandler.h"
+#include "CallbackHandlerFMOD.h"
 #include "FMODSettings.generated.h"
 
 class Paths;

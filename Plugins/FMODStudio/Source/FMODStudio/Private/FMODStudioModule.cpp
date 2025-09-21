@@ -4,7 +4,7 @@
 #include "FMODSettings.h"
 #include "FMODAudioComponent.h"
 #include "FMODBlueprintStatics.h"
-#include "FMODCallbackHandler.h"
+#include "CallbackHandlerFMOD.h"
 #include "FMODAssetTable.h"
 #include "FMODFileCallbacks.h"
 #include "FMODUtils.h"
