@@ -1,2 +1,6 @@
 *.uasset filter=lfs diff=lfs merge=lfs -text
 *.umap filter=lfs diff=lfs merge=lfs -text
+
+Plugins/FMODStudio/Docs/** linguist-documentation
+Plugins/FMODStudio/Source/** linguist-vendored
+Plugins/FMODStudioNiagara/Source/** linguist-vendored
