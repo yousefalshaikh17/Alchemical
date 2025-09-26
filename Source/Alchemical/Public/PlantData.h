@@ -29,5 +29,5 @@ public:
 	double GrowthTime;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Sprite"))
-	TSoftObjectPtr<UPaperSprite> Sprite;
+	TObjectPtr<UPaperSprite> Sprite;
 };
