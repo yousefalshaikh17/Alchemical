@@ -1,8 +1,8 @@
 #include "ElementTypesDisplayWidget.h"
 
-void UElementTypesDisplayWidget::NativeConstruct()
+void UElementTypesDisplayWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 	
 	if (MaxElementCount < 1) return;
 

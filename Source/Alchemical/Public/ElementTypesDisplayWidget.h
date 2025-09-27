@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Meta = (ClampMin = "0"))
 	int MaxElementCount = 1;
 
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateElementDisplay(TSet<EElement> NewElements);
