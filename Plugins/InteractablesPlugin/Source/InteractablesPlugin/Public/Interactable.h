@@ -8,8 +8,8 @@
 #include "InteractableController.h"
 #include "Interactable.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnInteract, UInteractable*, interactable, AActor*, actorWhoTriggered, UInteractableController*, controllerThatTriggered);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPromptDisplay, UInteractable*, interactable, AActor*, controllerOwner, UInteractableController*, controllerComponent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnInteract, UInteractable*, Interactable, AActor*, ActorWhoTriggered, UInteractableController*, ControllerThatTriggered);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPromptDisplay, UInteractable*, Interactable, AActor*, ControllerOwner, UInteractableController*, ControllerComponent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class INTERACTABLESPLUGIN_API UInteractable : public USceneComponent
@@ -22,7 +22,7 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Components")
-	UShapeComponent* collider;
+	UShapeComponent* Collider;
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -49,9 +49,9 @@ protected:
 
 public:
 	UFUNCTION()
-	virtual void TriggerPrimary(UInteractableController* controller);
+	virtual void TriggerPrimary(UInteractableController* Controller);
 	UFUNCTION()
-	virtual void TriggerSecondary(UInteractableController* controller);
+	virtual void TriggerSecondary(UInteractableController* Controller);
 
 	UFUNCTION(BlueprintCallable, Category = "Display")
 	virtual void UpdateDisplay();

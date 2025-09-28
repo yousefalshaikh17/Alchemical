@@ -62,11 +62,11 @@ protected:
 
 	virtual UInteractable* GetClosestInteractable();
 	virtual void UpdateBestInteractable();
-	virtual FText GetPrimaryInputDisplayText(ECommonInputType inputType);
-	virtual FText GetSecondaryInputDisplayText(ECommonInputType inputType);
+	virtual FText GetPrimaryInputDisplayText(ECommonInputType InputType);
+	virtual FText GetSecondaryInputDisplayText(ECommonInputType InputType);
 
 	// Event
-	virtual void OnInputChanged(ECommonInputType newInputType);
+	virtual void OnInputChanged(ECommonInputType NewInputType);
 
 	UFUNCTION()
 	void OnPrimaryInteractPressed();
@@ -75,8 +75,8 @@ protected:
 	void OnSecondaryInteractPressed();
 
 public:	
-	virtual void RegisterInteractable(UInteractable* interactable);
-	virtual void UnregisterInteractable(UInteractable* interactable);
+	virtual void RegisterInteractable(UInteractable* Interactable);
+	virtual void UnregisterInteractable(UInteractable* Interactable);
 
 	virtual void UpdateWidgetDisplay();
 };
