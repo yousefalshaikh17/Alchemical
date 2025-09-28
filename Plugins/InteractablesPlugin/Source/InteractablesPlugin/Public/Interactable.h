@@ -83,5 +83,6 @@ public:
 	FOnPromptDisplay OnPromptHidden;
 
 	// State
+	UPROPERTY(BlueprintReadOnly)
 	UInteractableController* DisplayingController;
 };
