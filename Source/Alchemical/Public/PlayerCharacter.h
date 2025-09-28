@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CarriedItem.h"
+#include "ItemType.h"
 #include "ElementTypesDisplayWidget.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
@@ -13,7 +13,7 @@
 #include "PlantData.h"
 #include "PlayerCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHeldItemChanged, APlayerCharacter*, Character, ECarriedItem, CarriedItemType, int, PlantIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHeldItemChanged, APlayerCharacter*, Character, EItemType, CarriedItemType, int, PlantIndex);
 
 UCLASS()
 class ALCHEMICAL_API APlayerCharacter : public ACharacter
@@ -55,20 +55,20 @@ protected:
 	bool GetHeldPlantData(FPlantData& PlantData) const;
 	void UpdateHeldItemDisplay() const;
 
-	bool IsSameCarriedItem(ECarriedItem NewCarriedItemType, int NewPlantIndex) const;
+	bool IsSameCarriedItem(EItemType NewCarriedItemType, int NewPlantIndex) const;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bMovementEnabled = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ECarriedItem CarriedItemType = ECarriedItem::None;
+	EItemType CarriedItemType = EItemType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlantIndex = -1;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void UpdateHeldItem(ECarriedItem NewCarriedItemType, int NewPlantIndex);
+	void UpdateHeldItem(EItemType NewCarriedItemType, int NewPlantIndex);
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
