@@ -54,9 +54,6 @@ protected:
 	UFUNCTION(BlueprintPure)
 	void GetHeldPlantData(bool& bFoundPlant, FPlantData& PlantData) const;
 
-	UFUNCTION(BlueprintPure)
-    void GetHeldItem(FItemInstance& Item) const;
-
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -64,6 +61,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void UpdateHeldItem(const FItemInstance NewItem);
+
+	UFUNCTION(BlueprintPure)
+	void GetHeldItem(FItemInstance& Item) const;
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
