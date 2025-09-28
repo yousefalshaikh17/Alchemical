@@ -3,14 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemContainerComponent.h"
 #include "GameFramework/Actor.h"
-#include "ItemSlotActor.h"
-#include "PaperSpriteComponent.h"
-#include "ElementTypesDisplayWidget.h"
 #include "TransmutationCircleSlot.generated.h"
 
 UCLASS()
-class ALCHEMICAL_API ATransmutationCircleSlot : public AItemSlotActor
+class ALCHEMICAL_API ATransmutationCircleSlot : public AActor
 {
 	GENERATED_BODY()
 	
@@ -19,16 +17,17 @@ public:
 	ATransmutationCircleSlot();
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UPaperSpriteComponent* PlantSpriteComponent;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UElementTypesDisplayWidget* ElementsDisplayWidget;
-	
-	void UpdatePlantDisplay() const;
+	UItemContainerComponent* ItemContainerComponent;
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void PlaceIngredient(int32 NewPlantIndex);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void ClearIngredient();
+
+	UFUNCTION(BlueprintPure)
+	void GetIngredient(bool& bHasIngredient, int& PlantIndex) const;
+
+	UFUNCTION(BlueprintPure)
+	bool HasIngredient() const;
 };

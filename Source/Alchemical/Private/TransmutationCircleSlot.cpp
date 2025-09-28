@@ -11,44 +11,39 @@ ATransmutationCircleSlot::ATransmutationCircleSlot()
 
 }
 
-void ATransmutationCircleSlot::UpdatePlantDisplay() const
+void ATransmutationCircleSlot::GetIngredient(bool& bHasIngredient, int& PlantIndex) const
 {
-	if (!PlantSpriteComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("PlantSpriteComponent is null!"));
-		return;
-	}
-
-	if (!ElementsDisplayWidget)
-	{
-		UE_LOG(LogTemp, Error, TEXT("ElementsDisplayWidget is null!"));
-		return;
-	}
+	bHasIngredient = false;
 	
-	FPlantData PlantData;
-	bool bFound = false;
-	GetPlantData(PlantData, bFound);
-	
-	if (bFound)
-	{
-		PlantSpriteComponent->SetSprite(PlantData.Sprite);
-		ElementsDisplayWidget->UpdateElementDisplay(PlantData.Elements);
-	} else
-	{
-		ElementsDisplayWidget->ClearElementDisplay();
-	}
+	if (!ItemContainerComponent) return;
 
-	PlantSpriteComponent->SetVisibility(bFound);
+	FItemInstance Item;
+	ItemContainerComponent->GetItem(Item);
+
+	bHasIngredient = Item.Type == EItemType::Plant;
+	PlantIndex = Item.PlantIndex;
+}
+
+bool ATransmutationCircleSlot::HasIngredient() const
+{
+	if (!ItemContainerComponent) return false;
+	return ItemContainerComponent->HasItem();
 }
 
 void ATransmutationCircleSlot::ClearIngredient_Implementation()
 {
-	ClearSlot();
-	UpdatePlantDisplay();
+	if (!ItemContainerComponent) return;
+
+	ItemContainerComponent->ClearItem();
 }
 
-void ATransmutationCircleSlot::PlaceIngredient_Implementation(int32 NewPlantIndex)
+void ATransmutationCircleSlot::PlaceIngredient_Implementation(const int32 NewPlantIndex)
 {
-	SetSlotItem(NewPlantIndex);
-	UpdatePlantDisplay();
+	if (!ItemContainerComponent) return;
+	
+	const FItemInstance NewItem = {
+		EItemType::Plant,
+		NewPlantIndex
+	};
+	ItemContainerComponent->SetItem(NewItem);
 }
