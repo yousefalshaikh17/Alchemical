@@ -9,11 +9,13 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "ItemContainerComponent.h"
+#include "ItemInstance.h"
 #include "PaperSpriteComponent.h"
 #include "PlantData.h"
 #include "PlayerCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnHeldItemChanged, APlayerCharacter*, Character, EItemType, CarriedItemType, int, PlantIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHeldItemChanged, APlayerCharacter*, Character, FItemInstance, Item);
 
 UCLASS()
 class ALCHEMICAL_API APlayerCharacter : public ACharacter
@@ -32,13 +34,10 @@ protected:
 	UInputAction* MoveInputAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UElementTypesDisplayWidget* ElementsDisplayWidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UPaperSpriteComponent* PlantSpriteComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperSprite* SeedSprite;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UItemContainerComponent* ItemContainerComponent;
 
 	
 
@@ -51,24 +50,20 @@ protected:
 
     UFUNCTION(BlueprintNativeEvent)
 	void HandleMoveInput(const FInputActionValue& Value);
-	
-	bool GetHeldPlantData(FPlantData& PlantData) const;
-	void UpdateHeldItemDisplay() const;
 
-	bool IsSameCarriedItem(EItemType NewCarriedItemType, int NewPlantIndex) const;
+	UFUNCTION(BlueprintPure)
+	void GetHeldPlantData(bool& bFoundPlant, FPlantData& PlantData) const;
+
+	UFUNCTION(BlueprintPure)
+    void GetHeldItem(FItemInstance& Item) const;
+
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bMovementEnabled = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EItemType CarriedItemType = EItemType::None;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int PlantIndex = -1;
-
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void UpdateHeldItem(EItemType NewCarriedItemType, int NewPlantIndex);
+	void UpdateHeldItem(const FItemInstance NewItem);
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

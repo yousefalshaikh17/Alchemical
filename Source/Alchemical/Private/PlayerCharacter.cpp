@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 
 #include "GameDataSubsystem.h"
+#include "ItemContainerComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -32,61 +33,22 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-bool APlayerCharacter::GetHeldPlantData(FPlantData& PlantData) const
+void APlayerCharacter::GetHeldPlantData(bool& bFoundPlant, FPlantData& PlantData) const
 {
-	if (PlantIndex < 0) return false;
+	bFoundPlant = false;
 	
-	const UGameDataSubsystem* GameDataSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameDataSubsystem>();
-	if (!GameDataSubsystem) return false;
-
-	bool bFoundPlant = false;
-	GameDataSubsystem->GetPlantData(PlantIndex, PlantData, bFoundPlant);
+	if (!ItemContainerComponent) return;
 	
-	return bFoundPlant;
+	ItemContainerComponent->GetItemPlantData(bFoundPlant, PlantData);
 }
 
-void APlayerCharacter::UpdateHeldItemDisplay() const
+void APlayerCharacter::GetHeldItem(FItemInstance& Item) const
 {
-	if (CarriedItemType == EItemType::None)
-	{
-		if (ElementsDisplayWidget)
-			ElementsDisplayWidget->ClearElementDisplay();
-
-		if (PlantSpriteComponent)
-			PlantSpriteComponent->SetVisibility(false);
-		return;
-	}
-
-	if (FPlantData PlantData; GetHeldPlantData(PlantData))
-	{
-		UPaperSprite* NewSprite;
-		switch (CarriedItemType)
-		{
-		case EItemType::Seed:
-			NewSprite = SeedSprite;
-			break;
-		case EItemType::Plant:
-			NewSprite = PlantData.Sprite;
-			break;
-		default:
-			NewSprite = nullptr;
-		}
-
-		if (ElementsDisplayWidget)
-			ElementsDisplayWidget->UpdateElementDisplay(PlantData.Elements);
-
-		if (PlantSpriteComponent)
-		{
-			PlantSpriteComponent->SetSprite(NewSprite);
-			PlantSpriteComponent->SetVisibility(true);	
-		}
-	}
+	if (!ItemContainerComponent) return;
+	
+	ItemContainerComponent->GetItem(Item);
 }
 
-bool APlayerCharacter::IsSameCarriedItem(const EItemType NewCarriedItemType, const int NewPlantIndex) const
-{
-	return CarriedItemType == NewCarriedItemType && (CarriedItemType == EItemType::None || PlantIndex == NewPlantIndex);
-}
 
 void APlayerCharacter::Move_Implementation(const float RightScale, const float ForwardScale)
 {
@@ -97,19 +59,14 @@ void APlayerCharacter::Move_Implementation(const float RightScale, const float F
 	AddMovementInput(CameraTransform->GetForwardVector(), ForwardScale, false);
 }
 
-void APlayerCharacter::UpdateHeldItem_Implementation(const EItemType NewCarriedItemType, const int NewPlantIndex)
+void APlayerCharacter::UpdateHeldItem_Implementation(const FItemInstance NewItem)
 {
-	if (IsSameCarriedItem(NewCarriedItemType, NewPlantIndex))
-		return;
+	if (!ItemContainerComponent) return;
 	
-	CarriedItemType = NewCarriedItemType;
-	PlantIndex = NewPlantIndex;
+	if (!ItemContainerComponent->SetItem(NewItem)) return;
 	
-	// Handle Sprite
-	UpdateHeldItemDisplay();
-
 	// Broadcast
-	OnHeldItemChanged.Broadcast(this, CarriedItemType, PlantIndex);
+	OnHeldItemChanged.Broadcast(this, NewItem);
 }
 
 // Called to bind functionality to input
