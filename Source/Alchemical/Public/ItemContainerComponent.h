@@ -22,8 +22,9 @@ public:
 	// Sets default values for this component's properties
 	UItemContainerComponent();
 
+	// Returns true if successful.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-    void SetItem(const FItemInstance& NewItem);
+    bool SetItem(const FItemInstance& NewItem);
 
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
     void ClearItem();

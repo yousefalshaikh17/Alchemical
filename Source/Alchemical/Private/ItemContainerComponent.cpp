@@ -13,10 +13,10 @@ UItemContainerComponent::UItemContainerComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UItemContainerComponent::SetItem_Implementation(const FItemInstance& NewItem)
+bool UItemContainerComponent::SetItem_Implementation(const FItemInstance& NewItem)
 {
 	if (IsSameCarriedItem(NewItem))
-		return;
+		return false;
 	
 	CurrentItem = NewItem;
 
@@ -28,6 +28,8 @@ void UItemContainerComponent::SetItem_Implementation(const FItemInstance& NewIte
 
 	// Broadcast event
 	OnItemChanged.Broadcast(this, CurrentItem);
+
+	return true;
 }
 
 
