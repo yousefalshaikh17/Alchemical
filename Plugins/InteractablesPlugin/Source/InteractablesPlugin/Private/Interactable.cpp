@@ -3,6 +3,8 @@
 
 #include "Interactable.h"
 
+#include "Components/ShapeComponent.h"
+
 // Sets default values for this component's properties
 UInteractable::UInteractable()
 {
@@ -16,8 +18,8 @@ void UInteractable::BeginPlay()
 	Super::BeginPlay();
 
 	// Initialize collider variable
-	collider = Cast<UShapeComponent>(GetAttachParent());
-	if (!collider)
+	Collider = Cast<UShapeComponent>(GetAttachParent());
+	if (!Collider)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Missing Attach Collider: %s"), *GetFName().ToString());
 		DestroyComponent();
@@ -25,26 +27,26 @@ void UInteractable::BeginPlay()
 	}
 	
 	// Bind collider events
-	collider->OnComponentBeginOverlap.AddDynamic(this, &UInteractable::OnColliderBeginOverlap);
-	collider->OnComponentEndOverlap.AddDynamic(this, &UInteractable::OnColliderEndOverlap);
+	Collider->OnComponentBeginOverlap.AddDynamic(this, &UInteractable::OnColliderBeginOverlap);
+	Collider->OnComponentEndOverlap.AddDynamic(this, &UInteractable::OnColliderEndOverlap);
 }
 
 // Handle when collider is overlapping with a character or actor with UInteractableController
 void UInteractable::OnColliderBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UInteractableController* controller = OtherActor->GetComponentByClass<UInteractableController>();
-	if (!controller) return;
+	UInteractableController* Controller = OtherActor->GetComponentByClass<UInteractableController>();
+	if (!Controller) return;
 
-	controller->RegisterInteractable(this);
+	Controller->RegisterInteractable(this);
 }
 
 // Handle when collider is no longer overlapping with a character or actor with UInteractableController
 void UInteractable::OnColliderEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UInteractableController* controller = OtherActor->GetComponentByClass<UInteractableController>();
-	if (!controller) return;
+	UInteractableController* Controller = OtherActor->GetComponentByClass<UInteractableController>();
+	if (!Controller) return;
 
-	controller->UnregisterInteractable(this);
+	Controller->UnregisterInteractable(this);
 }
 
 void UInteractable::UpdateDisplay()
@@ -55,31 +57,31 @@ void UInteractable::UpdateDisplay()
 }
 
 // Triggers the interactable which fires the OnInteract event.
-void UInteractable::TriggerPrimary(UInteractableController* controller)
+void UInteractable::TriggerPrimary(UInteractableController* Controller)
 {
 	if (!PrimaryActionEnabled) return;
 
-	if (!controller)
+	if (!Controller)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Cannot trigger Interactable without a controller."));
 		return;
 	}
 
-	AActor* actor = controller->GetOwner();
-	OnPrimaryInteract.Broadcast(this, actor, controller);
+	AActor* Actor = Controller->GetOwner();
+	OnPrimaryInteract.Broadcast(this, Actor, Controller);
 }
 
-void UInteractable::TriggerSecondary(UInteractableController* controller)
+void UInteractable::TriggerSecondary(UInteractableController* Controller)
 {
 	if (!SecondaryActionEnabled) return;
 
-	if (!controller)
+	if (!Controller)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Cannot trigger Interactable without a controller."));
 		return;
 	}
 
-	AActor* actor = controller->GetOwner();
-	OnSecondaryInteract.Broadcast(this, actor, controller);
+	AActor* Actor = Controller->GetOwner();
+	OnSecondaryInteract.Broadcast(this, Actor, Controller);
 }
 

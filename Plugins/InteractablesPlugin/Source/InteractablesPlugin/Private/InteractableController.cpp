@@ -18,19 +18,20 @@ void UInteractableController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APlayerController* playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	UCommonInputSubsystem* commonInputSubsystem = UCommonInputSubsystem::Get(playerController->GetLocalPlayer());
+	const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	UCommonInputSubsystem* CommonInputSubsystem = UCommonInputSubsystem::Get(PlayerController->GetLocalPlayer());
+	
 	// Bind input changed
-	commonInputSubsystem->OnInputMethodChangedNative.AddUObject(this, &UInteractableController::OnInputChanged);
+	CommonInputSubsystem->OnInputMethodChangedNative.AddUObject(this, &UInteractableController::OnInputChanged);
 	// Initialize input type
-	ActiveInputType = commonInputSubsystem->GetCurrentInputType();
+	ActiveInputType = CommonInputSubsystem->GetCurrentInputType();
 
 	// Set up player input
-	AActor* owner = GetOwner();
-	if (UEnhancedInputComponent* enhancedInput = Cast<UEnhancedInputComponent>(owner->InputComponent))
+	const AActor* Owner = GetOwner();
+	if (UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(Owner->InputComponent))
 	{
-		enhancedInput->BindAction(PrimaryInteractInputAction, ETriggerEvent::Started, this, &UInteractableController::OnPrimaryInteractPressed);
-		enhancedInput->BindAction(SecondaryInteractInputAction, ETriggerEvent::Started, this, &UInteractableController::OnSecondaryInteractPressed);
+		EnhancedInput->BindAction(PrimaryInteractInputAction, ETriggerEvent::Started, this, &UInteractableController::OnPrimaryInteractPressed);
+		EnhancedInput->BindAction(SecondaryInteractInputAction, ETriggerEvent::Started, this, &UInteractableController::OnSecondaryInteractPressed);
 	}
 
 	// Create UI
@@ -65,75 +66,75 @@ UInteractable* UInteractableController::GetClosestInteractable()
 	if (ActiveInteractables.IsEmpty())
 		return nullptr;
 
-	float minDistanceSquared = INFINITY;
-	UInteractable* bestCandidate = nullptr;
+	float MinDistanceSquared = INFINITY;
+	UInteractable* BestCandidate = nullptr;
 
-	FVector actorLocation = GetOwner()->GetActorLocation();
+	const FVector ActorLocation = GetOwner()->GetActorLocation();
 
-	for (auto& interactable : ActiveInteractables)
+	for (const auto& Interactable : ActiveInteractables)
 	{
-		if (!interactable->PrimaryActionEnabled && !interactable->SecondaryActionEnabled) continue;
+		if (!Interactable->PrimaryActionEnabled && !Interactable->SecondaryActionEnabled) continue;
 
 		// If there is no candidate, initialize with the current candidate.
-		if (!bestCandidate)
+		if (!BestCandidate)
 		{
-			bestCandidate = interactable;
+			BestCandidate = Interactable;
 			continue;
 		}
 
 		// Get distance squared. Distance squared saves computation time as it avoids the sqrt() operation.
-		FVector location = interactable->GetComponentLocation();
-		float distanceSquared = FVector::DistSquared(actorLocation, location);
+		FVector Location = Interactable->GetComponentLocation();
+		const float DistanceSquared = FVector::DistSquared(ActorLocation, Location);
 
 		// If distance is less than the current minimum, update it.
-		if (distanceSquared < minDistanceSquared)
+		if (DistanceSquared < MinDistanceSquared)
 		{
-			minDistanceSquared = distanceSquared;
-			bestCandidate = interactable;
+			MinDistanceSquared = DistanceSquared;
+			BestCandidate = Interactable;
 		}
 	}
 
-	return bestCandidate;
+	return BestCandidate;
 }
 
 // Updates best interactable variable and display
 void UInteractableController::UpdateBestInteractable()
 {
-	UInteractable* newBest = GetClosestInteractable();
-	if (newBest == BestInteractable)
+	UInteractable* NewBest = GetClosestInteractable();
+	if (NewBest == BestInteractable)
 		return;
 
 	if (BestInteractable)
 	{
 		BestInteractable->DisplayingController = nullptr;
-		BestInteractable->OnPromptHidden.Broadcast(newBest, GetOwner(), this);
+		BestInteractable->OnPromptHidden.Broadcast(NewBest, GetOwner(), this);
 	}
 
-	if (newBest)
+	if (NewBest)
 	{
-		newBest->DisplayingController = this;
-		newBest->OnPromptShown.Broadcast(newBest, GetOwner(), this);
+		NewBest->DisplayingController = this;
+		NewBest->OnPromptShown.Broadcast(NewBest, GetOwner(), this);
 	}
 
-	BestInteractable = newBest;
+	BestInteractable = NewBest;
 	UpdateWidgetDisplay();
 } 
 
 // Given an input type, returns the user-facing display text
-FText UInteractableController::GetPrimaryInputDisplayText(ECommonInputType inputType)
+FText UInteractableController::GetPrimaryInputDisplayText(const ECommonInputType InputType)
 {
-	bool hasDisplayText = PrimaryInputDisplayTextMap.Contains(inputType);
-	if (!hasDisplayText) return UnknownInputDisplayText;
+	const bool bHasDisplayText = PrimaryInputDisplayTextMap.Contains(InputType);
+	if (!bHasDisplayText) return UnknownInputDisplayText;
 
-	return PrimaryInputDisplayTextMap[inputType];
+	return PrimaryInputDisplayTextMap[InputType];
 }
 
-FText UInteractableController::GetSecondaryInputDisplayText(ECommonInputType inputType)
+FText UInteractableController::GetSecondaryInputDisplayText(const ECommonInputType InputType)
 {
-	bool hasDisplayText = SecondaryInputDisplayTextMap.Contains(inputType);
-	if (!hasDisplayText) return UnknownInputDisplayText;
+	const bool bHasDisplayText = SecondaryInputDisplayTextMap.Contains(InputType);
+	if (!bHasDisplayText) return UnknownInputDisplayText;
 
-	return SecondaryInputDisplayTextMap[inputType];
+	return SecondaryInputDisplayTextMap[InputType];
 }
 
 // Updates interaction widget display
@@ -141,12 +142,12 @@ void UInteractableController::UpdateWidgetDisplay()
 {
 	if (!InteractableWidget) return;
 
-	bool wasInViewport = InteractableWidget->IsInViewport();
+	const bool bWasInViewport = InteractableWidget->IsInViewport();
 
 	// Remove from viewport if no interactable is present
 	if (!BestInteractable)
 	{
-		if (wasInViewport)
+		if (bWasInViewport)
 			InteractableWidget->RemoveFromParent();
 		return;
 	}
@@ -156,14 +157,14 @@ void UInteractableController::UpdateWidgetDisplay()
 	IInteractableInterface::Execute_UpdateSecondaryPrompt(InteractableWidget, BestInteractable->SecondaryActionEnabled, GetSecondaryInputDisplayText(ActiveInputType), BestInteractable->SecondaryActionText);
 
 	// Add to viewport
-	if (!wasInViewport)
+	if (!bWasInViewport)
 		InteractableWidget->AddToViewport();
 }
 
 // Detect input changed and update any visible interactables
-void UInteractableController::OnInputChanged(ECommonInputType newInputType)
+void UInteractableController::OnInputChanged(const ECommonInputType NewInputType)
 {
-	ActiveInputType = newInputType;
+	ActiveInputType = NewInputType;
 	UpdateWidgetDisplay();
 }
 
@@ -188,19 +189,19 @@ void UInteractableController::OnSecondaryInteractPressed()
 }
 
 // Function to register an interactable as active
-void UInteractableController::RegisterInteractable(UInteractable* interactable)
+void UInteractableController::RegisterInteractable(UInteractable* Interactable)
 {
-	ActiveInteractables.Add(interactable);
+	ActiveInteractables.Add(Interactable);
 	UpdateBestInteractable();
 }
 
 // Function to unregister an interactable
-void UInteractableController::UnregisterInteractable(UInteractable* interactable)
+void UInteractableController::UnregisterInteractable(UInteractable* Interactable)
 {
-	int32 count = ActiveInteractables.Remove(interactable);
-	if (count == 0) return;
+	const int32 Count = ActiveInteractables.Remove(Interactable);
+	if (Count == 0) return;
 
-	if (!interactable || interactable == BestInteractable)
+	if (!Interactable || Interactable == BestInteractable)
 		return;
 
 	UpdateBestInteractable();
