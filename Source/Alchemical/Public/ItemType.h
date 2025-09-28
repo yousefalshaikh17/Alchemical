@@ -1,13 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CarriedItem.generated.h"
+#include "ItemType.generated.h"
 
 /**
  * Enum representing the player carried item.
  */
 UENUM(BlueprintType)
-enum class ECarriedItem : uint8
+enum class EItemType : uint8
 {
     None UMETA(DisplayName = "None"),
     Seed UMETA(DisplayName = "Seed"),

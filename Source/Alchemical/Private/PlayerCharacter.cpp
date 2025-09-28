@@ -47,7 +47,7 @@ bool APlayerCharacter::GetHeldPlantData(FPlantData& PlantData) const
 
 void APlayerCharacter::UpdateHeldItemDisplay() const
 {
-	if (CarriedItemType == ECarriedItem::None)
+	if (CarriedItemType == EItemType::None)
 	{
 		if (ElementsDisplayWidget)
 			ElementsDisplayWidget->ClearElementDisplay();
@@ -62,10 +62,10 @@ void APlayerCharacter::UpdateHeldItemDisplay() const
 		UPaperSprite* NewSprite;
 		switch (CarriedItemType)
 		{
-		case ECarriedItem::Seed:
+		case EItemType::Seed:
 			NewSprite = SeedSprite;
 			break;
-		case ECarriedItem::Plant:
+		case EItemType::Plant:
 			NewSprite = PlantData.Sprite;
 			break;
 		default:
@@ -83,9 +83,9 @@ void APlayerCharacter::UpdateHeldItemDisplay() const
 	}
 }
 
-bool APlayerCharacter::IsSameCarriedItem(const ECarriedItem NewCarriedItemType, const int NewPlantIndex) const
+bool APlayerCharacter::IsSameCarriedItem(const EItemType NewCarriedItemType, const int NewPlantIndex) const
 {
-	return CarriedItemType == NewCarriedItemType && (CarriedItemType == ECarriedItem::None || PlantIndex == NewPlantIndex);
+	return CarriedItemType == NewCarriedItemType && (CarriedItemType == EItemType::None || PlantIndex == NewPlantIndex);
 }
 
 void APlayerCharacter::Move_Implementation(const float RightScale, const float ForwardScale)
@@ -97,7 +97,7 @@ void APlayerCharacter::Move_Implementation(const float RightScale, const float F
 	AddMovementInput(CameraTransform->GetForwardVector(), ForwardScale, false);
 }
 
-void APlayerCharacter::UpdateHeldItem_Implementation(const ECarriedItem NewCarriedItemType, const int NewPlantIndex)
+void APlayerCharacter::UpdateHeldItem_Implementation(const EItemType NewCarriedItemType, const int NewPlantIndex)
 {
 	if (IsSameCarriedItem(NewCarriedItemType, NewPlantIndex))
 		return;
