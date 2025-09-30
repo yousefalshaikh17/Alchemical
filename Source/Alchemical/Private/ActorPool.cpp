@@ -35,39 +35,39 @@ void UActorPool::InitializePool()
 
 APooledActor* UActorPool::CreatePoolActor()
 {
-	APooledActor* actor = GetWorld()->SpawnActor<APooledActor>(PoolActorClass, FVector::ZeroVector, FRotator::ZeroRotator);
-	if (!actor) return nullptr;
+	APooledActor* Actor = GetWorld()->SpawnActor<APooledActor>(PoolActorClass, FVector::ZeroVector, FRotator::ZeroRotator);
+	if (!Actor) return nullptr;
 
-	actor->DeactivateFromPool();
+	Actor->DeactivateFromPool();
 
-	Pool.Add(actor);
+	Pool.Add(Actor);
 
-	return actor;
+	return Actor;
 }
 
 APooledActor* UActorPool::RequestActor(const FTransform& SpawnTransform)
 {
-	APooledActor* poolActor = nullptr;
+	APooledActor* PoolActor = nullptr;
 
-	for (auto& actor : Pool)
+	for (const auto& Actor : Pool)
 	{
-		if (!IsValid(actor) || actor->bIsActive) continue;
+		if (!IsValid(Actor) || Actor->bIsActive) continue;
 
-		poolActor = actor;
+		PoolActor = Actor;
 		break;
 	}
 
-	if (!poolActor && bIsDynamicallySized)
+	if (!PoolActor && bIsDynamicallySized)
 	{
-		poolActor = CreatePoolActor();
+		PoolActor = CreatePoolActor();
 		PoolSize++;
 	}
 
-	if (poolActor)
+	if (PoolActor)
 	{
-		poolActor->SetActorTransform(SpawnTransform);
-		poolActor->ActivateFromPool();
+		PoolActor->SetActorTransform(SpawnTransform);
+		PoolActor->ActivateFromPool();
 	}
 
-	return poolActor;
+	return PoolActor;
 }
