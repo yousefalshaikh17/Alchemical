@@ -11,8 +11,38 @@ ATransmutationCircleSlot::ATransmutationCircleSlot()
 
 }
 
-void ATransmutationCircleSlot::K2_OnReset()
+void ATransmutationCircleSlot::BeginPlay()
 {
+	Super::BeginPlay();
+
+	if (AAlchemicalGameMode* GameMode = Cast<AAlchemicalGameMode>(GetWorld()->GetAuthGameMode()))
+		GameMode->RegisterResettableActor(this);
+
+	if (const UWidgetComponent* WidgetComponent = GetComponentByClass<UWidgetComponent>(); ItemContainerComponent && WidgetComponent)
+	{
+		UElementTypesDisplayWidget* Widget = Cast<UElementTypesDisplayWidget>(WidgetComponent->GetWidget());
+		ItemContainerComponent->ElementsDisplayWidget = Widget;
+	}
+}
+
+void ATransmutationCircleSlot::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	ItemContainerComponent = GetComponentByClass<UItemContainerComponent>();
+	if (!ItemContainerComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ItemContainerComponent missing."))
+		return;
+	}
+
+	UPaperSpriteComponent* PaperSpriteComponent = GetComponentByClass<UPaperSpriteComponent>();
+	ItemContainerComponent->PlantSpriteComponent = PaperSpriteComponent;
+}
+
+void ATransmutationCircleSlot::Reset()
+{
+	Super::Reset();
 	ClearIngredient();
 }
 
