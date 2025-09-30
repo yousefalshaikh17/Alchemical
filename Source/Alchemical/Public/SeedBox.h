@@ -24,6 +24,7 @@ protected:
     UInteractable* InteractableComponent;
 	
 	// Called when the game starts or when spawned
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintNativeEvent)

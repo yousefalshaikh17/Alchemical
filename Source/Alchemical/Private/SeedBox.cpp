@@ -13,10 +13,9 @@ ASeedBox::ASeedBox()
 
 }
 
-// Called when the game starts or when spawned
-void ASeedBox::BeginPlay()
+void ASeedBox::PostInitializeComponents()
 {
-	Super::BeginPlay();
+	Super::PostInitializeComponents();
 
 	InteractableComponent = GetComponentByClass<UInteractable>();
 	if (InteractableComponent)
@@ -26,6 +25,12 @@ void ASeedBox::BeginPlay()
 		if (UShapeComponent* Collider = Cast<UShapeComponent>(AttachParent))
 			Collider->OnComponentBeginOverlap.AddDynamic(this, &ASeedBox::OnColliderBeginOverlap);
 	}
+}
+
+// Called when the game starts or when spawned
+void ASeedBox::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void ASeedBox::OnPrimaryInteract_Implementation(UInteractable* Interactable, AActor* ActorWhoTriggered,
