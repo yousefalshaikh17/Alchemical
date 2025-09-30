@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "ItemContainerComponent.h"
 #include "GameFramework/Actor.h"
+#include "Components/WidgetComponent.h"
+#include "AlchemicalGameMode.h"
 #include "TransmutationCircleSlot.generated.h"
 
 UCLASS()
@@ -16,10 +18,12 @@ public:
 	// Sets default values for this actor's properties
 	ATransmutationCircleSlot();
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UItemContainerComponent* ItemContainerComponent;
 public:
-	void K2_OnReset();
+	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
+	virtual void Reset() override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void PlaceIngredient(int32 NewPlantIndex);

@@ -21,7 +21,16 @@ class ALCHEMICAL_API UItemContainerComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UItemContainerComponent();
+	
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnItemChanged OnItemChanged;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UElementTypesDisplayWidget* ElementsDisplayWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperSpriteComponent* PlantSpriteComponent;
+	
 	// Returns true if successful.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
     bool SetItem(const FItemInstance& NewItem);
@@ -37,21 +46,12 @@ public:
 
     UFUNCTION(BlueprintPure)
     bool HasItem() const;
-
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FOnItemChanged OnItemChanged;
 	
 protected:	
 	FItemInstance CurrentItem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPaperSprite* SeedSprite;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UElementTypesDisplayWidget* ElementsDisplayWidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UPaperSpriteComponent* PlantSpriteComponent;
 
 	bool IsSameCarriedItem(const FItemInstance& Item) const;
 	void UpdateItemDisplay() const;
