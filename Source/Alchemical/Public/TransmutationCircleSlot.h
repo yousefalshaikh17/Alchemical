@@ -19,6 +19,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UItemContainerComponent* ItemContainerComponent;
 public:
+	void K2_OnReset();
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void PlaceIngredient(int32 NewPlantIndex);
 

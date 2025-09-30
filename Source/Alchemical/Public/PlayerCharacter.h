@@ -71,4 +71,8 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnHeldItemChanged OnHeldItemChanged;
 
+	/**
+	 * Override to prevent destruction on level reset. Uses AActor implementation.
+	 */
+	virtual void Reset() override { AActor::Reset(); }
 };

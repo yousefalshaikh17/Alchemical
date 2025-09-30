@@ -11,6 +11,11 @@ ATransmutationCircleSlot::ATransmutationCircleSlot()
 
 }
 
+void ATransmutationCircleSlot::K2_OnReset()
+{
+	ClearIngredient();
+}
+
 void ATransmutationCircleSlot::GetIngredient(bool& bHasIngredient, int& PlantIndex) const
 {
 	bHasIngredient = false;
