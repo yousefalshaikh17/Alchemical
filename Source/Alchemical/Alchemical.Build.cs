@@ -8,7 +8,7 @@ public class Alchemical : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D", "EnhancedInput", "Slate", "SlateCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "InteractablesPlugin", "FMODStudio" });
 
