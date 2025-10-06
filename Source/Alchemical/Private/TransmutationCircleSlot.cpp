@@ -15,7 +15,7 @@ void ATransmutationCircleSlot::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AAlchemicalGameMode* GameMode = Cast<AAlchemicalGameMode>(GetWorld()->GetAuthGameMode()))
+	if (AAlchemicalGameMode* GameMode = GetWorld()->GetAuthGameMode<AAlchemicalGameMode>())
 		GameMode->RegisterResettableActor(this);
 
 	if (const UWidgetComponent* WidgetComponent = GetComponentByClass<UWidgetComponent>(); ItemContainerComponent && WidgetComponent)
