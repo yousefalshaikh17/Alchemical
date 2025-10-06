@@ -2,6 +2,7 @@
 
 
 #include "AlchemicalGameState.h"
+#include "AlchemicalPlayerController.h"
 
 void AAlchemicalGameState::OnRep_Score()
 {
